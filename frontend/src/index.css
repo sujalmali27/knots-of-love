@@ -1,0 +1,254 @@
+/* ==========================================================================
+   GLOBAL THEME & TYPOGRAPHY
+   ========================================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Playfair+Display:wght@700&display=swap');
+
+:root {
+  --primary-pink: #ff85a2;       /* Signature Soft Rose */
+  --secondary-blush: #fce4ec;    /* Border & Accent Blush */
+  --text-grey: #4a4a4a;          /* Professional Soft Black */
+  --soft-white: #fffafb;         /* Creamy Canvas Background */
+  --shadow-sm: 0 4px 15px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 12px 25px rgba(255, 133, 162, 0.15);
+  --admin-accent: #f8f9fa;
+}
+
+body {
+  margin: 0;
+  background-color: var(--soft-white);
+  font-family: 'Poppins', sans-serif;
+  color: var(--text-grey);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Elegant Serif for Headings and Brand */
+h1, h2, .navbar-brand {
+  font-family: 'Playfair Display', serif;
+}
+
+/* Centered Page Heading Polish */
+h1 {
+  position: relative;
+  display: inline-block;
+}
+
+h1::after {
+  content: '';
+  display: block;
+  width: 50%;
+  height: 3px;
+  background: var(--primary-pink);
+  margin: 12px auto 0;
+  border-radius: 10px;
+  opacity: 0.5;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: 0.3s;
+}
+
+main {
+  min-height: 80vh;
+  padding-top: 20px;
+}
+
+/* ==========================================================================
+   NAVBAR & BRANDING
+   ========================================================================== */
+.navbar {
+  padding: 0.8rem 0;
+  box-shadow: 0 2px 10px rgba(252, 228, 236, 0.5);
+  background-color: #fffafb !important;
+}
+
+.navbar-brand img {
+  transition: transform 0.4s ease;
+}
+
+.navbar-brand:hover img {
+  transform: rotate(12deg) scale(1.1);
+}
+
+.badge {
+  font-weight: 500;
+  padding: 0.4em 0.7em;
+}
+
+/* ==========================================================================
+   PRODUCT CARD STYLING
+   ========================================================================== */
+.card {
+  border: none !important;
+  border-radius: 20px !important;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  background: white;
+  box-shadow: var(--shadow-sm);
+}
+
+.card:hover {
+  transform: translateY(-10px);
+  box-shadow: var(--shadow-lg);
+}
+
+.card-img-top {
+  height: 280px;
+  object-fit: cover;
+  border-radius: 20px 20px 0 0;
+  padding: 10px; /* Boutique framing effect */
+}
+
+.card:hover h3 {
+  color: #ff4d6d !important;
+  transform: scale(1.05);
+  transition: all 0.3s ease;
+}
+
+.product-title {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--text-grey);
+}
+
+.category-label {
+  font-size: 0.75rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #888;
+  margin-bottom: 5px;
+  display: block;
+}
+
+/* ==========================================================================
+   ADMIN PANEL & TABLE STYLING (The Final Polish)
+   ========================================================================== */
+.table {
+  background-color: white !important;
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.table thead th {
+  background-color: #fff5f7 !important; /* Very light blush header */
+  color: var(--text-grey);
+  border-bottom: 2px solid var(--secondary-blush) !important;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+/* Soft highlight when hovering over users or orders */
+tr:hover {
+  background-color: #fffafb !important;
+  transition: background-color 0.2s ease;
+}
+
+.btn-light {
+  background-color: #f8f9fa;
+  border-color: #e9ecef;
+}
+
+.btn-light:hover {
+  background-color: var(--secondary-blush);
+  border-color: var(--primary-pink);
+}
+
+/* ==========================================================================
+   CATEGORY & SEARCH STYLING
+   ========================================================================== */
+.search-box input {
+  border-radius: 50px 0 0 50px !important;
+  border: 1px solid var(--secondary-blush);
+  padding-left: 20px;
+}
+
+.search-box button {
+  border-radius: 0 50px 50px 0 !important;
+  background-color: var(--primary-pink) !important;
+  border: none;
+  padding: 0 20px;
+}
+
+.category-btn {
+  border-radius: 50px !important;
+  padding: 8px 22px !important;
+  font-weight: 500 !important;
+  margin: 5px;
+  border: 1px solid var(--primary-pink) !important;
+  background: transparent;
+  color: var(--primary-pink);
+}
+
+.category-btn.active, .category-btn:hover {
+  background-color: var(--primary-pink) !important;
+  color: white !important;
+}
+
+/* ==========================================================================
+   FLOATING INTERACTION BUTTONS
+   ========================================================================== */
+.ig-float, .wa-float {
+  position: fixed;
+  right: 30px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  z-index: 1000;
+  transition: transform 0.3s ease, background 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+}
+
+.ig-float {
+  bottom: 30px;
+  background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+  color: white !important;
+}
+
+.wa-float {
+  bottom: 105px; 
+  background-color: #25d366;
+  color: white !important;
+}
+
+.ig-float:hover, .wa-float:hover {
+  transform: scale(1.15) rotate(5deg);
+}
+
+/* ==========================================================================
+   SHOPPING CART & UI FIXES
+   ========================================================================== */
+.cart-item-row {
+  display: flex !important;
+  align-items: center !important;
+  background: white;
+  padding: 15px;
+  border-radius: 12px;
+  margin-bottom: 10px;
+  box-shadow: var(--shadow-sm);
+}
+
+.cart-delete-btn {
+  color: #ff4d4d !important; 
+  transition: 0.2s ease;
+}
+
+.cart-delete-btn:hover {
+  color: #cc0000 !important;
+  transform: scale(1.2);
+}
+
+@media (max-width: 768px) {
+  .cart-column-fix {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end; 
+    gap: 15px; 
+  }
+}

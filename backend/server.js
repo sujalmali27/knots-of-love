@@ -13,7 +13,7 @@ import uploadRoutes from "./routes/uploadRoutes.js";
 
 // Middleware & Utility Imports
 import { notFound, errorHandler } from './middleware/error_middleware.js';
-import startOrderCleanup from './utils/orderCleanup.js'; // ✅ Import cleanup job
+import startOrderCleanup from './utils/orderCleanup.js'; 
 
 dotenv.config();
 
@@ -33,8 +33,6 @@ const connectDB = async () => {
 
 connectDB();
 
-// --- CRON JOBS ---
-// ✅ Runs the cleanup task to delete unpaid orders after 30 mins
 startOrderCleanup(); 
 
 // --- MIDDLEWARE ---
@@ -57,13 +55,23 @@ app.get("/api/config/razorpay", (req, res) => {
   res.send({ keyId: process.env.RAZORPAY_KEY_ID });
 });
 
-// --- STATIC FOLDER SETUP ---
+// --- STATIC FOLDER & PRODUCTION SETUP ---
 const __dirname = path.resolve();
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-app.get("/", (req, res) => {
-  res.send("Crochet E-commerce Backend API is running!");
-});
+if (process.env.NODE_ENV === 'production') {
+  // 1. Serve the static files from the React app build folder
+  app.use(express.static(path.join(__dirname, '/frontend/dist')));
+
+  // 2. For any route that doesn't match an API route, send the index.html file
+  app.get('*', (req, res) =>
+    res.sendFile(path.resolve(__dirname, 'frontend', 'dist', 'index.html'))
+  );
+} else {
+  app.get("/", (req, res) => {
+    res.send("Crochet E-commerce Backend API is running!");
+  });
+}
 
 // --- ERROR HANDLERS ---
 app.use(notFound);

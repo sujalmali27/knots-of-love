@@ -39,13 +39,13 @@ const ProductEditScreen = () => {
     }
   }, [product]);
 
-  // ✅ UPDATED: Optimized Upload Handler with 5MB Validation
+  // ✅ FIXED: Simplified for Cloudinary URLs
   const uploadFileHandler = async (e) => {
     const file = e.target.files[0];
     
     if (!file) return;
 
-    // 1. Client-side Pre-check for 5MB limit
+    // Client-side Pre-check for 5MB limit
     if (file.size > 5 * 1024 * 1024) {
       return toast.error('File is too large! Please upload an image under 5MB.');
     }
@@ -57,13 +57,11 @@ const ProductEditScreen = () => {
       const res = await uploadProductImage(formData).unwrap();
       toast.success(res.message);
 
-      // ✅ Path Cleaning Logic for local and production compatibility
-      const cleanPath = res.image.replace(/\\/g, '/').replace('backend/', '');
-      const finalPath = cleanPath.startsWith('/') ? cleanPath : `/${cleanPath}`;
+      // ✅ FIX: Directly set the image URL from Cloudinary
+      // Cloudinary returns a full https link, so no "/" or "backend/" cleaning is needed
+      setImage(res.image); 
       
-      setImage(finalPath);
     } catch (err) {
-      // ✅ This catches the "Image too large! Max limit is 5MB" error from backend
       toast.error(err?.data?.message || err.error);
     }
   };
@@ -151,7 +149,6 @@ const ProductEditScreen = () => {
                     className='mb-2'
                     style={{ borderRadius: '12px' }}
                   />
-                  {/* ✅ Added accept attribute for better UX */}
                   <Form.Control
                     type='file'
                     label='Choose File'

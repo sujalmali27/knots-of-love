@@ -57,17 +57,13 @@ app.get("/api/config/razorpay", (req, res) => {
 
 // --- STATIC FOLDER & PRODUCTION SETUP ---
 const __dirname = path.resolve();
-
-// Use path.join without a leading slash for subdirectories
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 if (process.env.NODE_ENV === 'production') {
-  // 1. Serve the static files from the React app build folder
-  // Removed the '/' before frontend to fix potential path resolution issues
   app.use(express.static(path.join(__dirname, 'frontend', 'dist')));
 
-  // 2. For any route that doesn't match an API route, send the index.html file
-  app.get('*', (req, res) =>
+  // Change '*' to '(.*)' for Express 5 compatibility
+  app.get('(.*)', (req, res) =>
     res.sendFile(path.resolve(__dirname, 'frontend', 'dist', 'index.html'))
   );
 } else {

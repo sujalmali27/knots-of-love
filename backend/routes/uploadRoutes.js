@@ -1,19 +1,25 @@
 import path from 'path';
 import express from 'express';
 import multer from 'multer';
+import { v2 as cloudinary } from 'cloudinary';
+import { CloudinaryStorage } from 'multer-storage-cloudinary';
 
 const router = express.Router();
 
-const storage = multer.diskStorage({
-  destination(req, file, cb) {
-    // Points to the 'uploads/' folder in your root directory
-    cb(null, 'uploads/'); 
-  },
-  filename(req, file, cb) {
-    cb(
-      null,
-      `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`
-    );
+// 1. Configure Cloudinary with the keys you added to Render
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+// 2. Configure Cloudinary Storage
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'knots-of-love', // Images will be organized in this folder
+    allowed_formats: ['jpg', 'jpeg', 'png'],
+    transformation: [{ width: 500, height: 500, crop: 'limit' }], // Optional: resizes for better performance
   },
 });
 
@@ -29,7 +35,6 @@ function checkFileType(file, cb) {
   }
 }
 
-// ✅ Configured with 5MB limit and proper file filtering
 const upload = multer({ 
   storage, 
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB Limit
@@ -39,7 +44,6 @@ const upload = multer({
 });
 
 router.post('/', (req, res) => {
-  // We wrap the upload in a function to catch Multer errors specifically
   upload.single('image')(req, res, function (err) {
     if (err instanceof multer.MulterError) {
       if (err.code === 'LIMIT_FILE_SIZE') {
@@ -47,7 +51,6 @@ router.post('/', (req, res) => {
       }
       return res.status(400).json({ message: err.message });
     } else if (err) {
-      // Catches the "Images only!" error from checkFileType
       return res.status(400).json({ message: err.message });
     }
 
@@ -58,16 +61,10 @@ router.post('/', (req, res) => {
       });
     }
 
-    // Convert Windows backslashes to forward slashes for the database
-    const rawPath = req.file.path.replace(/\\/g, "/"); 
-    
-    const cleanPath = rawPath.startsWith('backend/') 
-      ? rawPath.replace('backend/', '') 
-      : rawPath;
-
+    // req.file.path is now a permanent URL (https://res.cloudinary.com/...)
     res.status(200).send({
       message: 'Image uploaded successfully',
-      image: `/${cleanPath}`, 
+      image: req.file.path, 
     });
   });
 });

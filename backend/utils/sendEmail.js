@@ -1,16 +1,18 @@
 import nodemailer from 'nodemailer';
 
 const sendEmail = async (options) => {
-  // ✅ Optimized for Render Production
+  // ✅ Switch to explicit Host/Port to bypass Render network blocks
   const transporter = nodemailer.createTransport({
-    service: 'gmail', 
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false, // Must be false for port 587
     auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS, // Your 16-digit App Password
+      user: process.env.EMAIL_USER, // sujalmali27@gmail.com
+      pass: process.env.EMAIL_PASS, // vixusegzdauvgzxj
     },
-    // Adding stability for cloud-to-cloud connections
     tls: {
-      rejectUnauthorized: false 
+      rejectUnauthorized: false,
+      minVersion: 'TLSv1.2'
     }
   });
 
@@ -23,12 +25,10 @@ const sendEmail = async (options) => {
 
   try {
     await transporter.sendMail(mailOptions);
-    console.log(`✅ Email sent to: ${options.email}`);
+    console.log(`✅ Email successfully sent to: ${options.email}`);
   } catch (error) {
-    // This log is CRITICAL. It tells you the EXACT reason Gmail rejected it.
+    // This will now catch and explain any new errors in the Render logs
     console.error("❌ Gmail Error Details:", error.message);
-    
-    // We throw the error so your controller's catch block can catch it
     throw new Error('Email delivery failed');
   }
 };

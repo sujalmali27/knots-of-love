@@ -1,23 +1,18 @@
 import nodemailer from 'nodemailer';
 
 const sendEmail = async (options) => {
-  // ✅ Switch to explicit Host/Port to bypass Render network blocks
+  // ✅ Switch to Mailtrap to bypass Render's Gmail network block
   const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 587,
-    secure: false, // Must be false for port 587
+    host: process.env.EMAIL_HOST, // sandbox.smtp.mailtrap.io
+    port: 2525,                   // ✅ Port 2525 is open on Render
     auth: {
-      user: process.env.EMAIL_USER, // sujalmali27@gmail.com
-      pass: process.env.EMAIL_PASS, // vixusegzdauvgzxj
+      user: process.env.EMAIL_USER, // 99d9b9d4040456
+      pass: process.env.EMAIL_PASS, // 0b87afe3d68497
     },
-    tls: {
-      rejectUnauthorized: false,
-      minVersion: 'TLSv1.2'
-    }
   });
 
   const mailOptions = {
-    from: `"Knots Of Love 🧶" <${process.env.EMAIL_USER}>`,
+    from: '"Knots Of Love 🧶" <no-reply@knotsoflove.com>',
     to: options.email,
     subject: options.subject,
     html: options.message,
@@ -25,10 +20,10 @@ const sendEmail = async (options) => {
 
   try {
     await transporter.sendMail(mailOptions);
-    console.log(`✅ Email successfully sent to: ${options.email}`);
+    console.log(`✅ Success! Email captured in Mailtrap Sandbox.`);
   } catch (error) {
-    // This will now catch and explain any new errors in the Render logs
-    console.error("❌ Gmail Error Details:", error.message);
+    // This will now log Mailtrap-specific errors if any occur
+    console.error("❌ Email Error Details:", error.message);
     throw new Error('Email delivery failed');
   }
 };

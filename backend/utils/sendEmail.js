@@ -1,29 +1,25 @@
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
+
+// ✅ Initialize Resend with your new API Key from Render Environment
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const sendEmail = async (options) => {
-  // ✅ Switch to Mailtrap to bypass Render's Gmail network block
-  const transporter = nodemailer.createTransport({
-    host: process.env.EMAIL_HOST, // sandbox.smtp.mailtrap.io
-    port: 2525,                   // ✅ Port 2525 is open on Render
-    auth: {
-      user: process.env.EMAIL_USER, // 99d9b9d4040456
-      pass: process.env.EMAIL_PASS, // 0b87afe3d68497
-    },
-  });
-
-  const mailOptions = {
-    from: '"Knots Of Love 🧶" <no-reply@knotsoflove.com>',
-    to: options.email,
-    subject: options.subject,
-    html: options.message,
-  };
-
   try {
-    await transporter.sendMail(mailOptions);
-    console.log(`✅ Success! Email captured in Mailtrap Sandbox.`);
+    const data = await resend.emails.send({
+      // ⚠️ Free tier requirement: You MUST use this 'from' address
+      from: 'Knots of Love <onboarding@resend.dev>',
+      
+      // ⚠️ Free tier requirement: This MUST be your GitHub/Resend account email
+      to: options.email, 
+      
+      subject: options.subject,
+      html: options.message,
+    });
+
+    console.log("✅ Real email sent successfully via Resend!", data);
   } catch (error) {
-    // This will now log Mailtrap-specific errors if any occur
-    console.error("❌ Email Error Details:", error.message);
+    // This will catch issues like using an unverified "to" address
+    console.error("❌ Resend Error:", error.message);
     throw new Error('Email delivery failed');
   }
 };
